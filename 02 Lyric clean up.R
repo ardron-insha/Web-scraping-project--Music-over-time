@@ -9,10 +9,10 @@ song_df <- readRDS("complete_data.rds")
 ##naive analysis of how many words there are in each song
 
 song_df_2 <- song_df %>% 
-  mutate(lyrics_clean= gsub("\\[[^][]*]","",lyrics)) %>% ##AZ lyrics adds comments in square brackets
-  mutate(lyrics_clean= gsub("\n|\\s{2,}"," ",lyrics_clean)) %>% ##tidying up spaces
-  mutate(lyrics_clean= gsub("\"|\\\\","",lyrics_clean)) %>%
-  mutate(No_Wrds= sapply(strsplit(lyrics_clean, "\\s"), length))
+  mutate(lyrics_clean= gsub("\\[[^][]*]","",lyrics), ##AZ lyrics adds comments in square brackets
+         lyrics_clean= gsub("\n|\\s{2,}"," ",lyrics_clean),
+         lyrics_clean= gsub("\"|\\\\","",lyrics_clean),##tidying up spaces
+         No_Wrds= sapply(strsplit(lyrics_clean, "\\s"), length))
 
 
 lyrics_list=list()
@@ -20,11 +20,11 @@ for (i in song_df_2$ID) {
   lyric <- unlist((str_split(song_df_2[i, "lyrics_clean"], "\\s")))
   
   x <- data.frame("lyrics"=lyric)%>% 
-    mutate(artist= song_df_2[i, "artist"]) %>% 
-    mutate(songname=song_df_2[i, "songname"])  %>% 
-    mutate(ID=song_df_2[i, "ID"] ) %>% 
-    mutate(rank=song_df_2[i, "rank"] ) %>% 
-    mutate(year=song_df_2[i, "year"] ) %>% 
+    mutate(artist= song_df_2[i, "artist"],
+           songname=song_df_2[i, "songname"],
+           ID=song_df_2[i, "ID"],
+           rank=song_df_2[i, "rank"],
+           year=song_df_2[i, "year"] ) %>% 
     mutate_all(as.character)  %>% 
     filter(grepl("\\s|...|-", lyrics))
   
@@ -39,8 +39,8 @@ all_words <- do.call("rbind", lyrics_list)
 
 all_words_complete <- all_words %>% 
   group_by(artist, songname , ID, rank, year) %>% 
-  mutate(syllables=nsyllable(lyrics)) %>% 
-  mutate(three_more_syll =ifelse(syllables>=3, 1, 0)) 
+  mutate(syllables=nsyllable(lyrics),
+         three_more_syll =ifelse(syllables>=3, 1, 0)) 
 
 
 summary1 <- all_words2%>% 
