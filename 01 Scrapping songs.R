@@ -25,23 +25,23 @@ songname <- data.frame(as.character(html_nodes(webpage,".ye-chart-item__title"))
 artists <- data.frame(as.character(html_nodes(webpage,".ye-chart-item__artist")))
 
 top100songs <- cbind(songname, artists) %>% 
-  mutate(songtitle= tolower(gsub("<div class=\"ye-chart-item__title\">\n|</div>", "",as.character.html_nodes.webpage....ye.chart.item__title...))) %>% ##HTML clean up
-  mutate(artist= tolower(gsub("<div class=\"ye-chart-item__artist\">\n|</div>|<a href=\"/music|</a>", "",as.character.html_nodes.webpage....ye.chart.item__artist...))) %>% ##HTML clean up
-  mutate(artist1= gsub(".*>", "", artist)) %>% 
-  mutate(artist1= gsub(",|featuring| x ", "&amp;", artist1)) %>% 
-  mutate(artist2= ifelse(grepl("&amp;&amp;", artist1), sub("^.*?&amp;&amp;", "", artist1), 
-                         ifelse(grepl("&amp;", artist1), sub("^.*?&amp;", "", artist1),"")))  %>% 
-  mutate(artist3= ifelse(grepl("&amp;&amp;", artist2), sub("^.*?&amp;&amp;", "", artist2), 
+  mutate(songtitle= tolower(gsub("<div class=\"ye-chart-item__title\">\n|</div>", "",as.character.html_nodes.webpage....ye.chart.item__title...)),
+         artist= tolower(gsub("<div class=\"ye-chart-item__artist\">\n|</div>|<a href=\"/music|</a>", "",as.character.html_nodes.webpage....ye.chart.item__artist...)),
+         artist1= gsub(".*>", "", artist),
+         artist1= gsub(",|featuring| x ", "&amp;", artist1),
+         artist2= ifelse(grepl("&amp;&amp;", artist1), sub("^.*?&amp;&amp;", "", artist1), 
+                         ifelse(grepl("&amp;", artist1), sub("^.*?&amp;", "", artist1),"")),
+         artist3= ifelse(grepl("&amp;&amp;", artist2), sub("^.*?&amp;&amp;", "", artist2), 
                          ifelse(grepl("&amp;", artist2), sub("^.*?&amp;", "", artist2),""))) %>% 
   mutate_at(vars(songtitle, artist1, artist2, artist3), text_tidy) %>% 
-  mutate(year=i) %>% 
-  mutate(rank= rownames(.)) %>%  
-  mutate(artist1= ifelse(artist1=="lilnas", "lilnasx", artist1)) %>% 
+  mutate(year=i,
+         rank= rownames(.),
+         artist1= ifelse(artist1=="lilnas", "lilnasx", artist1)) %>% 
   select(year, rank, songtitle, artist, artist1, artist2, artist3)  %>% 
-  mutate(songtitle= gsub("\\(.*", "", songtitle)) %>% 
-  mutate(songtitle= gsub("[[:punct:]]", "", songtitle))  %>% 
-  mutate(artist1= gsub("[[:punct:]]", "", artist1))  %>% 
-  mutate(artist2= gsub("[[:punct:]]", "", artist2)) %>% 
+  mutate(songtitle= gsub("\\(.*", "", songtitle),
+         songtitle= gsub("[[:punct:]]", "", songtitle),
+         artist1= gsub("[[:punct:]]", "", artist1),
+         artist2= gsub("[[:punct:]]", "", artist2)) %>% 
   mutate_at(vars(artist1, artist2, artist3), funs(ifelse(.=="cardib", "cardi-b", .))) %>% 
   mutate_at(vars(artist1, artist2, artist3), funs(ifelse(.=="aboogiewitdahoodie", "boogiewitdahoodie", .))) %>% 
   mutate_at(vars(artist1, artist2, artist3), funs(ifelse(.=="pnk", "pink", .))) 
@@ -83,13 +83,13 @@ top100songs <- top100songs %>%
 
 ######GET PEAK DATE---------------
 top100songs <- top100songs %>% 
-  mutate(artist_1_refeed= gsub("/|.*>", "", artist)) %>% 
-  mutate(artist_1_refeed= str_trim(artist_1_refeed)) %>%
-  mutate(artist_1_refeed= gsub("\\s", "-", artist_1_refeed)) %>% 
-  mutate(artist_1_refeed= gsub(",|featuring| x ", "&amp;", artist_1_refeed))  %>% 
-  mutate(artist_1_refeed= gsub("-$", "", text_tidy(artist_1_refeed)))  %>% 
-  mutate(artist_1_refeed=ifelse(grepl("jay-z", artist_1_refeed), "jay-z", artist_1_refeed)) %>% 
-  mutate(artist_1_refeed=gsub("ke\\$ha", "kesha", artist_1_refeed))
+  mutate(artist_1_refeed= gsub("/|.*>", "", artist),
+         artist_1_refeed= str_trim(artist_1_refeed),
+         artist_1_refeed= gsub("\\s", "-", artist_1_refeed),
+         artist_1_refeed= gsub(",|featuring| x ", "&amp;", artist_1_refeed),
+         artist_1_refeed= gsub("-$", "", text_tidy(artist_1_refeed)),
+         artist_1_refeed=ifelse(grepl("jay-z", artist_1_refeed), "jay-z", artist_1_refeed),
+         artist_1_refeed=gsub("ke\\$ha", "kesha", artist_1_refeed))
 
   peakdate_DF = data.frame("song_name"= as.character(), 
                            "peak_date"= as.character(), 
@@ -130,9 +130,9 @@ peak_date <- gsub(".*color--secondary font--bold\" href=\"\">|</a>.*", "" ,peak_
 peakdate_fin <- data.frame(song_name) %>% 
   cbind(peak_date) %>% 
   mutate_all(as.character) %>% 
-  mutate(song_name_clean= tolower(text_tidy(song_name))) %>% 
-  mutate(song_name_clean= gsub("\\(.*", "", song_name_clean)) %>% 
-  mutate(song_name_clean= gsub("[[:punct:]]", "", song_name_clean))  %>% 
+  mutate(song_name_clean= tolower(text_tidy(song_name)),
+         song_name_clean= gsub("\\(.*", "", song_name_clean),
+         song_name_clean= gsub("[[:punct:]]", "", song_name_clean))  %>% 
   mutate(artist=paste(i)) 
 
 peakdate_DF <- peakdate_DF %>% 
@@ -190,10 +190,10 @@ peakdate_DF <- peakdate_DF %>%
    peakdate_fin <- data.frame(song_name) %>% 
      cbind(peak_date, peak_position, info2) %>% 
      mutate_all(as.character) %>% 
-     mutate(song_name_clean= tolower(text_tidy(song_name))) %>% 
-     mutate(song_name_clean= gsub("\\(.*", "", song_name_clean)) %>% 
-     mutate(song_name_clean= gsub("[[:punct:]]", "", song_name_clean))  %>% 
-     mutate(artist=paste(i)) 
+     mutate(song_name_clean= tolower(text_tidy(song_name)),
+            song_name_clean= gsub("\\(.*", "", song_name_clean),
+            song_name_clean= gsub("[[:punct:]]", "", song_name_clean),
+            artist=paste(i)) 
    
    peakdate_DF <- peakdate_DF %>% 
      rbind(peakdate_fin) 
@@ -281,13 +281,13 @@ songname <- as.character(html_nodes(webpage,"b")[2][1])
 lyric_data <- html_text(lyricsscrapped)
 
 songs <- as.data.frame(lyric_data[2] ) %>% 
-  mutate(lyrics=gsub("\r\n", " ",lyric_data[2]  )) %>% 
-  mutate(artist=gsub("Lyrics", "", lyric_data[1]) ) %>% 
-  mutate(songname=gsub("<b>|\"|</b>", "",songname ))  %>% 
+  mutate(lyrics=gsub("\r\n", " ",lyric_data[2]  ),
+         artist=gsub("Lyrics", "", lyric_data[1]),
+         songname=gsub("<b>|\"|</b>", "",songname ))  %>% 
   select(-`lyric_data[2]`) %>% 
-  mutate(ID=i) %>% 
-  mutate(rank=top100songs[i,"rank"]) %>% 
-  mutate(year= top100songs[i,"year"])
+  mutate(ID=i,
+         rank=top100songs[i,"rank"],
+         year= top100songs[i,"year"])
 
 final_list[[i]] <- assign(paste0("Rank_", top100songs[i,"rank"], "_in_year", top100songs[i,"year"]), songs)
 
@@ -343,6 +343,7 @@ complete_data <- final %>%
 plyr::count(complete_data$year)
 
 saveRDS(round2,"complete_data.rds")
+
 
 
 
