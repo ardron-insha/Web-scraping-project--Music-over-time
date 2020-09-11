@@ -1,6 +1,6 @@
 ---
 title: "Fun with music: Exploring how words in pop songs have changed over time"
-output: html_notebook
+output: rmarkdown::github_document
 ---
 ### Sources:
 
