@@ -56,24 +56,6 @@ rm(list=paste0(pos))
 top100songs <- do.call("rbind", hottestsongs) %>% 
   mutate(ID=row_number())
 
-##for some reason the last two numbers in 2011 didn't come through? I will append them myself, but not sure why that happened...
-y2011_100 <- data.frame("year"= c("2011"),
-                        "rank"= c("100"),
-                        "songtitle"=c("mylast"),
-                        "artist"= c("big-sean"),
-                        "artist1"= c("bigsean"),
-                        "artist2"= c("chrisbrown"),
-                        "artist3"= c(""),
-                        "ID"= c("1099"))
-
-y2016_100 <- data.frame("year"= c("2016"),
-                        "rank"= c("100"),
-                        "songtitle"=c("perfect"),
-                        "artist"= c("one-direction"),
-                        "artist1"= c("onedirection"),
-                        "artist2"= c(""),
-                        "artist3"= c(""),
-                        "ID"= c("1100"))
 
 
 top100songs <- top100songs %>% 
@@ -228,7 +210,27 @@ peakdate_DF <- peakdate_DF %>%
    tally() %>% 
    filter(n>1)
  
- saveRDS(top100songs1, "peakdate.rds")
+ ##2011 and 2016 don't have the number 7 song and the number 87 song respectively, I need to reorder rank to adjust for this
+ fix_years_fun <- function(fix_year, rank_fix, df){
+ 
+   fix_year_df <-  df %>% 
+  filter(year==fix_year ) %>% 
+   mutate(rank = as.numeric(rank),
+           rank = ifelse(rank>=rank_fix, rank +1, rank)) %>% 
+   filter(rank<101)
+   
+   df <- df %>% 
+     filter(year != fix_year) %>% 
+     rbind(fix_year_df)
+ return(df)
+}
+ 
+ top100songs1 = fix_years_fun(2011, 7, top100songs1)
+ top100songs1 = fix_years_fun(2016, 87, top100songs1)
+ 
+ saveRDS(top100songs1, "Billboard_data.rds")
+ 
+ 
  ##get lyrics with some error catching in the function
 
 lyric_parser <- function(ID, DATA) {
@@ -314,13 +316,7 @@ warnings()
 
 
 #need to review unmatched songs and assess how many more can be gathered
- final %>% 
-   group_by(year) %>% 
-   tally()
 
-saveRDS(final,"FINAL SONGS.rds" )
-
-write.csv(final, "ALL SONGS.csv")
 
 ##ran a second round of the function with some more cleaning
 ##noticed that AZ often chops off "the" before an artist name, noticed Beyonce is written with last name
@@ -341,6 +337,8 @@ complete_data <- final %>%
   rbind(round2)
 
 plyr::count(complete_data$year)
+
+
 
 saveRDS(round2,"complete_data.rds")
 
