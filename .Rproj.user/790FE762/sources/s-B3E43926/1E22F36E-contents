@@ -1,0 +1,52 @@
+---
+title: "Fun with music: Exploring how words in pop songs have changed over time"
+output: github_document
+
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Sources:
+
+* Pop songs and their ranking: Pop songs for each year were gathered from Billboard's top 100 rankings found here: https://www.billboard.com/charts/hot-100
+For each song, the date when the song peaked and the peak ranking on Billboard was gathered from each song's page, for example: https://www.billboard.com/charts/hot-100?rank=1
+
+* Lyrics: All lyrics were gathered from AZLyrics.com
+
+### Step 1: Getting the data
+
+The file "01 Scrapping Songs" scrapes Billboard for the top 100 songs in each year from 2009 to 2019. From Billboard I can get the peak rank for the song, it's peak date and highest rank position in the year and supporting artists.
+Then, each song + artist combo is searched on AZLyrics to create the lyrics dataset. Some songs were associated with the supporting artists on AZLyrics only so I re-ran the script to get more matches.
+
+**Total songs and artists by year gathered from Billboard:** 
+
+
+```{r, echo = FALSE, message=FALSE}
+
+library(tidyverse, quietly = T)
+library(knitr)
+lyricsdata <- readRDS("complete_data.rds")
+full_list <- readRDS("peakdate.rds")
+
+
+x = full_list %>% 
+  mutate(lyrics_found= ifelse(ID %in% lyricsdata$ID, 1, 0),
+         peak_date_found = ifelse(!is.na(peak_date), 1, 0)) %>% 
+  group_by(year) %>% 
+  summarize(`Total Songs`= n(), 
+            `Total Songs`= n_distinct(songtitle, artist1, artist2, artist3),
+            `Distinct Artists`= n_distinct(c(artist1, artist2, artist3)),
+            `Songs With Lyrics`= sum(lyrics_found),
+            `Songs with Peak Dates`= sum(peak_date_found)) %>% 
+  rename(Year= year)
+
+kable(x) 
+```
+
+**Notes:** 
+
+* There is an extra song in 2012. This is because Christina Perri's song "A Thousand Years" comes in two parts and is being treated as one entry. For now I will keep these songs separate despite having the same ranking
+* For some reason 2011 and 2016 have missing songs. In 2011, number 7 is missing and in 2016, number 87 is missing
+* Peak date information was not available for all songs but ranges from 70% to 95% depending on year
+
+

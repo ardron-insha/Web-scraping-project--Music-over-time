@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1600117716971.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2077889191",
+    "id" : "1E22F36E",
+    "lastKnownWriteTime" : 1600119662,
+    "last_content_update" : 1600119745834,
+    "path" : "~/Documents/Continued learning/Coding and R/Music-over-time/readme.Rmd",
+    "project_path" : "readme.Rmd",
+    "properties" : {
+        "cursorPosition" : "7,3",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
