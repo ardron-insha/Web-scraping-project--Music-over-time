@@ -4,7 +4,7 @@ library(quanteda)
 
 ##lyric data
 
-song_df <- readRDS("complete_data.rds") 
+song_df <- readRDS("AZ_data.rds") 
 
 ##naive analysis of how many words there are in each song
 
@@ -57,4 +57,4 @@ summary2 <- all_words_unique%>%
   summarize(
             no_words_with_three_or_mor= sum(three_more_syll, na.rm=T)) 
 
-saveRDS(all_words_complete, "all_words_complete.rds")
+saveRDS(all_words_complete, "Lyrics_data.rds")
