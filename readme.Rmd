@@ -25,8 +25,8 @@ Then, each song + artist combo is searched on AZLyrics to create the lyrics data
 
 library(tidyverse, quietly = T)
 library(knitr)
-lyricsdata <- readRDS("complete_data.rds")
-full_list <- readRDS("peakdate.rds")
+lyricsdata <- readRDS("AZ_data.rds")
+full_list <- readRDS("Billboard_data.rds")
 
 
 x = full_list %>% 
