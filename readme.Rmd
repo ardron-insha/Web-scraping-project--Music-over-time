@@ -1,10 +1,11 @@
 ---
 title: "Fun with music: Exploring how words in pop songs have changed over time"
-output:
-  html_document:
-    keep_md: true
+output: github_document
 
 ---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 ### Sources:
 
 * Pop songs and their ranking: Pop songs for each year were gathered from Billboard's top 100 rankings found here: https://www.billboard.com/charts/hot-100
@@ -20,11 +21,12 @@ Then, each song + artist combo is searched on AZLyrics to create the lyrics data
 **Total songs and artists by year gathered from Billboard:** 
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, message=FALSE}
 
 library(tidyverse, quietly = T)
-lyricsdata <- readRDS("C:\\Users\\ichaddha\\Documents\\complete-data.rds")
-full_list <- readRDS("C:\\Users\\ichaddha\\Documents\\peakdate.rds")
+library(knitr)
+lyricsdata <- readRDS("complete_data.rds")
+full_list <- readRDS("peakdate.rds")
 
 
 x = full_list %>% 
@@ -38,10 +40,13 @@ x = full_list %>%
             `Songs with Peak Dates`= sum(peak_date_found)) %>% 
   rename(Year= year)
 
-x 
+kable(x) 
 ```
+
 **Notes:** 
-* There is an extra song in 2012. This is because Christina Perri's song "A Thousand Years" comes in two parts and is being treated as one entry. For now I will keep these songs separate despite having the same ranking.
-* For some reason 2011 and 2016 have missing songs. In 2011, number 7 is missing and in 2016, number 87 is missing.
+
+* There is an extra song in 2012. This is because Christina Perri's song "A Thousand Years" comes in two parts and is being treated as one entry. For now I will keep these songs separate despite having the same ranking
+* For some reason 2011 and 2016 have missing songs. In 2011, number 7 is missing and in 2016, number 87 is missing
+* Peak date information was not available for all songs but ranges from 70% to 95% depending on year
 
 
