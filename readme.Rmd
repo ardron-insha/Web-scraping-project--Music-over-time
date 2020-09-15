@@ -105,7 +105,20 @@ full_list %>%
   mutate(top10_artist= ifelse(artist_comp %in% artists_2$artist1, 1, 0)) %>% 
   filter(top10_artist==1) %>% 
   count(year, artist_comp) %>% 
-  #mutate(artist_comp= as.factor(artist_comp)) %>% 
-  ggplot(., aes(x=year, y=n, fill=artist_comp)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() 
+  rename(Artist=artist_comp, Year=year) %>% 
+  mutate(Artist= stringr::str_to_title(Artist),
+         Artist= case_when(
+           Artist== "Nickiminaj"~"Nicki Minaj",
+           Artist=="Taylorswift" ~"Taylor Swift",
+           Artist=="Lilwayne"~ "Lil Wayne",
+           Artist=="Maroon5"~"Maroon 5",
+           Artist=="Arianagrande"~ "Ariana Grande",
+           Artist=="Brunomars"~"Bruno Mars",
+           Artist=="Justinbieber"~  "Justin Bieber",
+           Artist=="Chrisbrown"~"Chris Brown",
+           TRUE~as.character(Artist)
+         )
+  ) %>% 
+  ggplot(., aes(x=Year, y=n, fill=Artist)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() +ylab("Total Songs in Top 100 List") 
 
   ```
