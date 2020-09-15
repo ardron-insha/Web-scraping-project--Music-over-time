@@ -6,14 +6,14 @@ output: github_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-### Sources:
+#### Sources
 
 * Pop songs and their ranking: Pop songs for each year were gathered from Billboard's top 100 rankings found here: https://www.billboard.com/charts/hot-100
 For each song, the date when the song peaked and the peak ranking on Billboard was gathered from each song's page, for example: https://www.billboard.com/charts/hot-100?rank=1
 
 * Lyrics: All lyrics were gathered from AZLyrics.com
 
-### Step 1: Getting the data
+#### Getting the data
 
 The file "01 Scrapping Songs" scrapes Billboard for the top 100 songs in each year from 2009 to 2019. From Billboard I can get the peak rank for the song, it's peak date and highest rank position in the year and supporting artists.
 Then, each song + artist combo is searched on AZLyrics to create the lyrics dataset. Some songs were associated with the supporting artists on AZLyrics only so I re-ran the script to get more matches.
@@ -49,4 +49,63 @@ kable(x)
 * For some reason 2011 and 2016 have missing songs. In 2011, number 7 is missing and in 2016, number 87 is missing
 * Peak date information was not available for all songs but ranges from 70% to 95% depending on year
 
+#### Looking at top artists over time
 
+The top 10 most popular artists across the data:
+
+```{r, echo = FALSE, message=FALSE}
+
+artists= full_list %>% 
+  select(artist1) %>% 
+  rbind(full_list %>% 
+          select(artist2) %>% rename(artist1=artist2)) %>% 
+  rbind(full_list %>% 
+          select(artist3) %>% rename(artist1= artist3))
+
+knitr::kable(artists %>% 
+  count(artist1) %>% 
+  filter(!artist1=="") %>% 
+  arrange(desc(n)) %>% head(10) %>% 
+  mutate(artist1= stringr::str_to_title(artist1),
+         artist1= case_when(
+           artist1== "Nickiminaj"~"Nicki Minaj",
+           artist1=="Taylorswift" ~"Taylor Swift",
+           artist1=="Lilwayne"~ "Lil Wayne",
+           artist1=="Maroon5"~"Maroon 5",
+           artist1=="Arianagrande"~ "Ariana Grande",
+           artist1=="Brunomars"~"Bruno Mars",
+           artist1=="Justinbieber"~  "Justin Bieber",
+           artist1=="Chrisbrown"~"Chris Brown",
+           TRUE~as.character(artist1)
+         )
+  ) %>% 
+  rename(Artist=artist1, `Total Top Songs`=n)
+)
+
+```
+
+
+Drake is consinderably more popular than the next artist in the list with over 50 songs making the top 100 list.
+
+How does the success of top artists track over time?
+
+```{r, echo = FALSE, message=FALSE}
+library(ggplot2)
+library(ggthemes)
+library(RColorBrewer)
+nb.cols <- 10
+artists_2= artists %>%
+  count(artist1) %>% 
+  filter(!artist1=="") %>% 
+  arrange(desc(n)) %>% head(10)
+
+
+full_list %>% 
+  gather(artist_number, artist_comp, artist1:artist3) %>% 
+  mutate(top10_artist= ifelse(artist_comp %in% artists_2$artist1, 1, 0)) %>% 
+  filter(top10_artist==1) %>% 
+  count(year, artist_comp) %>% 
+  #mutate(artist_comp= as.factor(artist_comp)) %>% 
+  ggplot(., aes(x=year, y=n, fill=artist_comp)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() 
+
+  ```

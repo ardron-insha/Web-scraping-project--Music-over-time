@@ -1,7 +1,7 @@
 Fun with music: Exploring how words in pop songs have changed over time
 ================
 
-### Sources:
+#### Sources
 
   - Pop songs and their ranking: Pop songs for each year were gathered
     from Billboard’s top 100 rankings found here:
@@ -12,7 +12,7 @@ Fun with music: Exploring how words in pop songs have changed over time
 
   - Lyrics: All lyrics were gathered from AZLyrics.com
 
-### Step 1: Getting the data
+#### Getting the data
 
 The file “01 Scrapping Songs” scrapes Billboard for the top 100 songs in
 each year from 2009 to 2019. From Billboard I can get the peak rank for
@@ -49,3 +49,27 @@ Billboard:**
     is missing and in 2016, number 87 is missing
   - Peak date information was not available for all songs but ranges
     from 70% to 95% depending on year
+
+#### Looking at top artists over time
+
+The top 10 most popular artists across the data:
+
+| Artist        | Total Top Songs |
+| :------------ | --------------: |
+| Drake         |              51 |
+| Rihanna       |              33 |
+| Nicki Minaj   |              29 |
+| Taylor Swift  |              22 |
+| Lil Wayne     |              19 |
+| Maroon 5      |              19 |
+| Ariana Grande |              18 |
+| Bruno Mars    |              18 |
+| Chris Brown   |              18 |
+| Justin Bieber |              18 |
+
+Drake is consinderably more popular than the next artist in the list
+with over 50 songs making the top 100 list.
+
+How does the success of top artists track over time?
+
+![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
