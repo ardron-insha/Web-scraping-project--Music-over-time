@@ -73,3 +73,47 @@ with over 50 songs making the top 100 list.
 How does the success of top artists track over time?
 
 ![](readme_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+#### Looking at the lyrics of songs by year
+
+The lyrics data is pretty messy, it has a lot of “words” like “oh oh
+oh…”. I have tried to filter these out using stop words from
+tidytext as well as other general cleaning (removing punctuation, spaces
+etc).
+
+To start, I want to see whether words fall into “positive” or “negative”
+categories. I’m using “get\_sentiment” from tidytext and Bing Liu and
+Co’s dataset. This dataset classifies words into “positive” or
+“negative” categories. How does this change over time?
+
+![](readme_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+I see a lot of words that are marked NA. I’m not sure which ones are NA
+because they’re neutral and which ones are NA because they’re not really
+words like “oooh”. *Problem* Need to solve for this- maybe I can remove
+words that are non-standard?
+
+Taking a look at the most common words and their sentiments:
+
+| Words | Sentiment | Total Instances |
+| :---- | :-------- | --------------: |
+| you   | NA        |           14882 |
+| the   | NA        |           10119 |
+| not   | NA        |            6542 |
+| and   | NA        |            5889 |
+| that  | NA        |            4265 |
+| like  | positive  |            3431 |
+| your  | NA        |            3144 |
+| are   | NA        |            2818 |
+| all   | NA        |            2473 |
+| know  | NA        |            2388 |
+
+Looking at top 10 positive, negative and neutral words:
+![](readme_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+Unsurprisingly, most words are just filler words.
+
+Looking at only words marked “positive” and “negative” over time:
+![](readme_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+Was the sentiment of pop songs more positive or negative by year?
+![](readme_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->

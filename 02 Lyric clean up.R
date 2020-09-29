@@ -3,6 +3,8 @@ library(tidyverse)
 library(quanteda)
 library(qdap)
 library(tm)
+library(tidytext)
+library(textdata)
 ##lyric data
 
 song_df <- readRDS("AZ_data.rds") 
@@ -57,13 +59,14 @@ all_words <- do.call("rbind", lyrics_list)
 
 #label stop words
 all_words = all_words %>% 
-  mutate(stop_word= ifelse(lyrics %in% c("oh", "like","can","get", stopwords("en")), 1, 0))
+  mutate(stop_word= ifelse(lyrics %in% c("oh", "like","can","get","yeah", "you", stopwords("en")), 1, 0))
 
 
 all_words_complete <- all_words %>% 
   group_by(artist, songname , ID, rank, year) %>% 
   mutate(syllables=nsyllable(lyrics),
-         three_more_syll =ifelse(syllables>=3, 1, 0)) 
+         three_more_syll =ifelse(syllables>=3, 1, 0))  %>% 
+  left_join(get_sentiments("nrc"), by=c("lyrics"= "word"))
 
 all_words_complete %>% 
   ungroup() %>% 

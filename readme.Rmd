@@ -27,7 +27,7 @@ library(tidyverse, quietly = T)
 library(knitr)
 lyricsdata <- readRDS("AZ_data.rds")
 full_list <- readRDS("Billboard_data.rds")
-
+all_words_complete <- readRDS("Lyrics_data.rds")
 
 x = full_list %>% 
   mutate(lyrics_found= ifelse(ID %in% lyricsdata$ID, 1, 0),
@@ -93,6 +93,7 @@ How does the success of top artists track over time?
 library(ggplot2)
 library(ggthemes)
 library(RColorBrewer)
+
 nb.cols <- 10
 artists_2= artists %>%
   count(artist1) %>% 
@@ -119,6 +120,126 @@ full_list %>%
            TRUE~as.character(Artist)
          )
   ) %>% 
-  ggplot(., aes(x=Year, y=n, fill=Artist)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() +ylab("Total Songs in Top 100 List") 
+  ggplot(., aes(x=Year, y=n, fill=Artist)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() +ylab("Total Songs in Top 100 List") + 
+  labs(title= "Number of Songs from The \n Top 10 Artist by Year") +
+  theme(plot.title = element_text(hjust = 0.5), 
+    legend.position = "right")
 
-  ```
+```
+
+
+#### Looking at the lyrics of songs by year
+
+The lyrics data is pretty messy, it has a lot of "words" like "oh oh oh...". I have tried to filter these out using stop words from tidytext as well as other general cleaning (removing punctuation, spaces etc). 
+
+To start, I want to see whether words fall into "positive" or "negative" categories. I'm using "get_sentiment" from tidytext and Bing Liu and Co's dataset. This dataset classifies words into "positive" or "negative" categories. How does this change over time?
+
+```{r,echo = FALSE, message=FALSE}
+
+lyrics_sum_year = all_words_complete %>% 
+  ungroup() %>% 
+  filter(stop_word==0) %>% 
+  count(sentiment, year) %>%
+  mutate(sentiment = case_when(
+    sentiment=="negative" ~ "Negative",
+    sentiment == "positive"~ "Positive",
+     is.na(sentiment) ~ "Neutral",
+    T ~ sentiment)) 
+
+ggplot(lyrics_sum_year) +
+ aes(x = year, fill = sentiment, weight= n) +
+ geom_bar() +
+scale_fill_brewer(palette = "Set1", ) +
+ labs(x = "Year", y = "Count of Lyrics", title = "Sentiment of words by year, \nusing Bing Liu and Co's dataset", fill = "Sentiment") +
+ ggthemes::theme_gdocs()+
+theme(plot.title = element_text(hjust = 0.5), 
+    legend.position = "right")
+
+
+```
+
+I see a lot of words that are marked NA. I'm not sure which ones are NA because they're neutral and which ones are NA because they're not really words like "oooh".
+*Problem* Need to solve for this- maybe I can remove words that are non-standard?
+
+Taking a look at the most common words and their sentiments: 
+```{r,echo = FALSE, message=FALSE}
+all_words_complete %>% 
+  ungroup() %>% 
+  count(lyrics, sentiment) %>% 
+  arrange(desc(n)) %>% 
+  head(10) %>% 
+  rename(Words=lyrics, Sentiment=sentiment, `Total Instances`= n) %>% 
+  knitr::kable()
+
+```
+
+Looking at top 10 positive, negative and neutral words: 
+```{r,echo = FALSE, message=FALSE}
+
+lyrics_sum = all_words_complete %>% 
+  ungroup() %>% 
+  filter(stop_word==0) %>% 
+  count(lyrics, sentiment) %>%
+  mutate(sentiment = case_when(
+    sentiment=="negative" ~ "Negative",
+    sentiment == "positive"~ "Positive",
+    is.na(sentiment) ~ "Neutral",
+    T ~ sentiment)) %>% 
+  group_by(sentiment)  %>% 
+  top_n(10) %>% 
+  arrange( desc(n)) 
+
+ggplot(lyrics_sum) +
+ aes(x = reorder(lyrics, n), fill = sentiment, weight = n) +
+ geom_bar() +
+ scale_fill_brewer(palette = "Set1", ) +
+ labs(y = "Count", title = "Most Common Positive, \nNegative and Neutral words", fill = "Sentiment", x = "Lyrics") +
+ coord_flip() +
+ ggthemes::theme_gdocs() +
+ theme(legend.position = "top") +
+ facet_wrap(vars(sentiment), scales = "free_y") + theme(plot.title = element_text(hjust = 0.5), 
+    legend.position = "right") 
+
+```
+Unsurprisingly, most words are just filler words.
+
+Looking at only words marked "positive" and "negative" over time:
+```{r,echo = FALSE, message=FALSE}
+
+lyrics_sum_year %>%
+ filter(sentiment!= "Neutral") %>%
+ mutate(n= ifelse(sentiment=="Negative", n*-1, n)) %>% 
+ filter(!is.na(n)) %>%
+ ggplot() +
+ aes(x = year, fill = sentiment, weight = n) +
+ geom_bar() +
+ scale_fill_brewer(palette = "Set1") +
+ labs(x = "Year", y = "Count", title = "Total Positive and Negative \nWords by Year", fill = "Sentiment") +
+ coord_flip() +
+ ggthemes::theme_gdocs()+
+ theme(plot.title = element_text(hjust = 0.5), 
+    legend.position = "right") 
+
+
+```
+
+Was the sentiment of pop songs more positive or negative by year?
+```{r,echo = FALSE, message=FALSE}
+
+lyrics_sum_year %>%
+ filter(sentiment!= "Neutral") %>%
+  group_by(year) %>% 
+ mutate(perc=100*(n/sum(n))) %>% 
+# mutate(perc= ifelse(sentiment=="Negative", perc*-1, perc)) %>% 
+ ggplot() +
+ aes(x = year, fill = sentiment, weight = perc) +
+ geom_bar() +
+ scale_fill_brewer(palette = "Set1") +
+ labs(x = "Year", y = "Percentage of Words with Sentiment", title = "Percentage of Positive and Negative \nWords out of all Words with Sentiment by Year", fill = "Sentiment") +
+ coord_flip() +
+ ggthemes::theme_gdocs()+
+ theme(plot.title = element_text(hjust = 0.5), 
+    legend.position = "right") 
+
+
+```
