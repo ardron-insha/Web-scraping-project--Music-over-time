@@ -93,6 +93,20 @@ because they’re neutral and which ones are NA because they’re not really
 words like “oooh”. *Problem* Need to solve for this- maybe I can remove
 words that are non-standard?
 
+| Year | Negative | Positive | Neutral/Unlabeled | Songs With Lyrics |
+| :--- | :------- | :------- | :---------------- | ----------------: |
+| 2009 | 7.19%    | 8.75%    | 84.06%            |                90 |
+| 2010 | 8.01%    | 7.7%     | 84.29%            |                86 |
+| 2011 | 6.91%    | 6.87%    | 86.22%            |                84 |
+| 2012 | 7.36%    | 6.39%    | 86.25%            |                90 |
+| 2013 | 7.96%    | 8.33%    | 83.71%            |                87 |
+| 2014 | 7.82%    | 7.23%    | 84.95%            |                91 |
+| 2015 | 7.7%     | 6.82%    | 85.48%            |                85 |
+| 2016 | 8.02%    | 6.98%    | 85%               |                83 |
+| 2017 | 9.03%    | 6.23%    | 84.74%            |                88 |
+| 2018 | 7.64%    | 5.75%    | 86.62%            |                92 |
+| 2019 | 9%       | 5.88%    | 85.12%            |                96 |
+
 Taking a look at the most common words and their sentiments:
 
 | Words | Sentiment | Total Instances |
@@ -109,11 +123,19 @@ Taking a look at the most common words and their sentiments:
 | know  | NA        |            2388 |
 
 Looking at top 10 positive, negative and neutral words:
-![](readme_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
 Unsurprisingly, most words are just filler words.
 
 Looking at only words marked “positive” and “negative” over time:
-![](readme_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 Was the sentiment of pop songs more positive or negative by year?
-![](readme_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](readme_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+
+However, this is an oversimplified approach, what if the lyric is “bad
+love”, the sentiment should be negative but will be classified as both
+negative (bad) and positive (love). Maybe getting a ratio of positive to
+negative words for each song will be a better assessment.
+
+![](readme_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
