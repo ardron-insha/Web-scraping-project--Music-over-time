@@ -122,10 +122,10 @@ full_list %>%
          )
   ) %>% 
   ggplot(., aes(x=Year, y=n, fill=Artist)) + geom_bar(stat="identity", position= "stack") + scale_fill_tableau(palette = "Tableau 10") +theme_gdocs() +ylab("Total Songs in Top 100 List") + 
-  labs(title= "Number of Songs from The \n Top 10 Artist by Year") +
+  labs(title= "Number of Songs from The Top 10 Artist by Year") +
   theme(plot.title = element_text(hjust = 0.5), 
     legend.position = "right")+labs(size = 0.5) + 
-  theme(plot.title = element_text(size = 14))
+  theme(plot.title = element_text(size = 14, face= "bold"))
 
 
 ```
@@ -153,11 +153,11 @@ ggplot(lyrics_sum_year) +
  aes(x = year, fill = sentiment, weight= n) +
  geom_bar() +
 scale_fill_brewer(palette = "Set1", ) +
- labs(x = "Year", y = "Count of Lyrics", title = "Sentiment of words by year, \nusing Bing Liu and Co's dataset", fill = "Sentiment") +
+ labs(x = "Year", y = "Count of Lyrics", title = "Sentiment of words by year, using Bing Liu and Co's dataset", fill = "Sentiment") +
  ggthemes::theme_gdocs()+
 theme(plot.title = element_text(hjust = 0.5), 
     legend.position = "right")+labs(size = 0.5) + 
-  theme(plot.title = element_text(size = 14))
+  theme(plot.title = element_text(size = 14, face= "bold"))
 
 
 
@@ -225,13 +225,13 @@ ggplot(lyrics_sum) +
  aes(x = reorder(lyrics, n), fill = sentiment, weight = n) +
  geom_bar() +
  scale_fill_brewer(palette = "Set1", ) +
- labs(y = "Count", title = "Most Common Positive, \nNegative and Neutral words", fill = "Sentiment", x = "Lyrics") +
+ labs(y = "Count", title = "Most Common Positive, Negative and Neutral words", fill = "Sentiment", x = "Lyrics") +
  coord_flip() +
  ggthemes::theme_gdocs() +
  theme(legend.position = "top") +
  facet_wrap(vars(sentiment), scales = "free_y") + theme(plot.title = element_text(hjust = 0.5), 
-    legend.position = "right") +labs(size = 0.5) +
-theme(plot.title = element_text(size = 14))
+    legend.position = "right") +labs(size = 0.5) + 
+  theme(plot.title = element_text(size = 14, face= "bold"))
 ```
 
 Unsurprisingly, most words are just filler words.
@@ -247,12 +247,12 @@ lyrics_sum_year %>%
  aes(x = year, fill = sentiment, weight = n) +
  geom_bar() +
  scale_fill_brewer(palette = "Set1") +
- labs(x = "Year", y = "Count", title = "Total Positive and Negative \nWords by Year", fill = "Sentiment") +
+ labs(x = "Year", y = "Count", title = "Total Positive and Negative Words by Year", fill = "Sentiment") +
  coord_flip() +
  ggthemes::theme_gdocs()+
  theme(plot.title = element_text(hjust = 0.5), 
-    legend.position = "right") +labs(size = 0.5) + 
-  theme(plot.title = element_text(size = 14))
+    legend.position = "right") +labs(size = 0.5)+ 
+  theme(plot.title = element_text(size = 14, face= "bold"))
 
 
 
@@ -275,7 +275,7 @@ lyrics_sum_year %>%
  ggthemes::theme_gdocs()+
  theme(plot.title = element_text(hjust = 0.5), 
     legend.position = "right") +labs(size = 0.5) + 
-  theme(plot.title = element_text(size = 14))
+  theme(plot.title = element_text(size = 14, face= "bold"))
 
 
 ```
@@ -311,6 +311,6 @@ ratios %>%
  ggthemes::theme_gdocs()+
  theme(plot.title = element_text(hjust = 0.5), 
     legend.position = "right") +labs(size = 0.5) + 
-  theme(plot.title = element_text(size = 14))
+  theme(plot.title = element_text(size = 14, face= "bold"))
 
 ```
