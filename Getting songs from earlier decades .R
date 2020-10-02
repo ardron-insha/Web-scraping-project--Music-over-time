@@ -87,5 +87,29 @@ final = data.frame()
 final = do.call("rbind", final_list)
 
 saveRDS(final,"lyrics_2000_to_2008.rds")
-top100songs2000to2008 = readRDS("top100songs2000to2008.rds")
+top100songs2000to2008 = readRDS("top100songs2000to2008 (1).rds")
+Billboard_data = readRDS("Billboard_data.rds")
+##merge with recent data
 
+setdiff(names(top100songs2000to2008), names(Billboard_data))
+
+
+Billboard_data = Billboard_data %>% 
+  rbind(top100songs2000to2008) %>% 
+  mutate_at(vars("ID", "rank", "year"), as.numeric) %>% 
+  arrange(year, rank) %>% 
+  mutate(ID= row_number())
+
+saveRDS(Billboard_data ,"Billboard_data")
+
+
+song_df = readRDS("AZ_data.rds")
+songs2 = readRDS("lyrics_2000_to_2008.rds")
+
+
+song_df = song_df %>% rbind(songs2) %>% 
+  select(-ID) %>% 
+  mutate_at(vars("rank", "year"), as.numeric) %>% 
+  left_join(Billboard_data %>% select(year, rank, ID), by=c("year", "rank"))
+
+saveRDS(song_df, "AZ_data.rds")

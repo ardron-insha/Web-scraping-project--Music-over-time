@@ -28,7 +28,9 @@ library(knitr)
 lyricsdata <- readRDS("AZ_data.rds")
 full_list <- readRDS("Billboard_data.rds") %>% 
   mutate(peak_date= lubridate::ymd(gsub("\".*", "", peak_date)))
-all_words_complete <- readRDS("Lyrics_data.rds")
+all_words_complete <- readRDS("Lyrics_data.rds") %>% 
+  ungroup() %>% 
+  mutate_at(vars("rank", "year", "ID"), as.numeric)
 
 x = full_list %>% 
   mutate(lyrics_found= ifelse(ID %in% lyricsdata$ID, 1, 0),
@@ -77,6 +79,7 @@ knitr::kable(artists %>%
            artist1=="Brunomars"~"Bruno Mars",
            artist1=="Justinbieber"~  "Justin Bieber",
            artist1=="Chrisbrown"~"Chris Brown",
+           artist1=="Justintimberlake"~"Justin Timberlake",
            TRUE~as.character(artist1)
          )
   ) %>% 
@@ -118,6 +121,7 @@ full_list %>%
            Artist=="Brunomars"~"Bruno Mars",
            Artist=="Justinbieber"~  "Justin Bieber",
            Artist=="Chrisbrown"~"Chris Brown",
+           Artist=="Justintimberlake"~"Justin Timberlake",
            TRUE~as.character(Artist)
          )
   ) %>% 
@@ -314,3 +318,5 @@ ratios %>%
   theme(plot.title = element_text(size = 14, face= "bold"))
 
 ```
+
+

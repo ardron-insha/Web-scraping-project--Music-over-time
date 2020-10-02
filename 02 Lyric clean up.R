@@ -7,8 +7,7 @@ library(tidytext)
 library(textdata)
 ##lyric data
 
-song_df <- readRDS("AZ_data.rds") 
-
+songs_df = readRDS("AZ_data.rds")
 ##naive analysis of how many words there are in each song
 
 song_df_2 <- song_df %>% 
@@ -66,7 +65,7 @@ all_words_complete <- all_words %>%
   group_by(artist, songname , ID, rank, year) %>% 
   mutate(syllables=nsyllable(lyrics),
          three_more_syll =ifelse(syllables>=3, 1, 0))  %>% 
-  left_join(get_sentiments("nrc"), by=c("lyrics"= "word"))
+  left_join(get_sentiments("bing"), by=c("lyrics"= "word"))
 
 all_words_complete %>% 
   ungroup() %>% 
